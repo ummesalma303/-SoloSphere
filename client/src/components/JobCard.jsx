@@ -2,7 +2,9 @@
 
 import { Link } from 'react-router-dom'
 
-const JobCard = () => {
+const JobCard = ({job}) => {
+  const {title,description,min_price,max_price,bid_count,category} = job
+  console.log(job)
   return (
     <Link
       to={`/job/1`}
@@ -19,18 +21,16 @@ const JobCard = () => {
 
       <div>
         <h1 className='mt-2 text-lg font-semibold text-gray-800 '>
-          E-commerce Website Development
+         {title}
         </h1>
-
+        <h3>Category: {category}</h3>
         <p className='mt-2 text-sm text-gray-600 '>
-          Dramatically redefine bleeding-edge infrastructures after
-          client-focused value. Intrinsicly seize user-centric partnerships
-          through out-of-the-box architectures. Distinctively.
+         {description}
         </p>
         <p className='mt-2 text-sm font-bold text-gray-600 '>
-          Range: $500 - $600
+          Range: ${max_price} - ${min_price}
         </p>
-        <p className='mt-2 text-sm font-bold text-gray-600 '>Total Bids: 0</p>
+        <p className='mt-2 text-sm font-bold text-gray-600 '>{bid_count}</p>
       </div>
     </Link>
   )

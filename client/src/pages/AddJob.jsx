@@ -1,10 +1,49 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-
+import { AuthContext } from '../providers/AuthProvider'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 const AddJob = () => {
+  const {user} = useContext(AuthContext)
+  // console.log(user)
   const [startDate, setStartDate] = useState(new Date())
+  const handleJobData=async (e)=>{
+    e.preventDefault()
+    const form = e.target
+    const title = form.job_title.value
+    const email = form.email.value
+    const deadline = startDate
+    const category = form.category.value
+    const min_price = parseFloat(form.min_price.value)
+    const max_price = parseFloat(form.max_price.value)
+    const description = form.description.value
+  const jobData= {
+    title,
+    buyer:{
+      email,
+      name: user?.displayName,
+      photo: user?.photoURL,
+    },
+    deadline,
+    category,
+    min_price,
+    max_price,
+    description,
+    bid_count:0
+  }
+  // console.log(import.meta.env.VITE_API_URL)
+ try {
+  
+   await axios.post(`${import.meta.env.VITE_API_URL}/add-job`,jobData)
+  // console.log(data)
+  form.reset()
+  toast.success('Added Data Successful')
+ } catch (error) {
+  console.log(error)
+ }
 
+}
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
       <section className=' p-2 md:p-6 mx-auto bg-white rounded-md shadow-md '>
@@ -12,7 +51,7 @@ const AddJob = () => {
           Post a Job
         </h2>
 
-        <form>
+        <form onSubmit={handleJobData}>
           <div className='grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2'>
             <div>
               <label className='text-gray-700 ' htmlFor='job_title'>
@@ -97,7 +136,7 @@ const AddJob = () => {
             ></textarea>
           </div>
           <div className='flex justify-end mt-6'>
-            <button className='disabled:cursor-not-allowed px-8 py-2.5 leading-5 text-white transition-colors duration-300 transhtmlForm bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600'>
+            <button type='submit' className='disabled:cursor-not-allowed px-8 py-2.5 leading-5 text-white transition-colors duration-300 transhtmlForm bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600'>
               Save
             </button>
           </div>

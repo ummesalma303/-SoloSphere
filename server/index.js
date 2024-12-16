@@ -9,8 +9,8 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-// const uri = "mongodb://localhost:27017/"
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ot76b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = "mongodb://localhost:27017/"
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ot76b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -42,6 +42,34 @@ async function run() {
     
       res.send(result)
     })
+
+    //  /* ------------------------ get some jobs data from db ----------------------- */
+     app.get('/job',async(req,res)=>{
+      const email = req.query.email
+      console.log(email)
+      let query = {}
+      if (email) {
+        query ={"buyer.email": email}
+        console.log(query)
+      }
+      const result = await jobCollection.find(query).toArray()
+      console.log(result)
+      res.send(result)
+     })
+
+     /* ------------------------ get some jobs data from db ----------------------- */
+    //  app.get('/add-job',async(req,res)=>{
+    //   const category = req.query.category
+    //   let query = {}
+    //   if (category) {
+    //     query ={category: category}
+        
+    //   }
+    //   const result = await jobCollection.find(query).toArray()
+    //   // console.log(result)
+    //   res.send(result)
+    //  })
+
 
      /* ------------------------ get all jobs data from db ----------------------- */
      app.get('/add-job',async(req,res)=>{

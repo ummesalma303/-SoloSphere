@@ -21,6 +21,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+        loader:()=>fetch(`${import.meta.env.VITE_API_URL}/add-job`)
       },
       {
         path: '/jobs',
@@ -74,6 +75,7 @@ const router = createBrowserRouter([
             <MyPostedJobs />
           </PrivateRoute>
         ),
+        
       },
       {
         path: '/bid-requests',

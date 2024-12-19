@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb')
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 require('dotenv').config()
 
 const port = process.env.PORT || 9000
@@ -31,7 +31,21 @@ async function run() {
     
     
     
-    
+  
+  /* ------------------------ get all jobs data from db ----------------------- */
+  app.get('/add-job',async(req,res)=>{
+    const result = await jobCollection.find().toArray()
+    res.send(result)
+   })
+
+     //  /* ------------------------ get some jobs data from db ----------------------- */
+  
+     app.get('/jobs/:email', async (req, res) => {
+      const email = req.params.email
+      const query = { 'buyer.email': email }
+      const result = await jobCollection.find(query).toArray()
+      res.send(result)
+    })
     
     
     /* ----------------------- save a job data in mongodb ----------------------- */
@@ -43,19 +57,15 @@ async function run() {
       res.send(result)
     })
 
-    //  /* ------------------------ get some jobs data from db ----------------------- */
-     app.get('/job',async(req,res)=>{
-      const email = req.query.email
-      console.log(email)
-      let query = {}
-      if (email) {
-        query ={"buyer.email": email}
-        console.log(query)
-      }
-      const result = await jobCollection.find(query).toArray()
-      console.log(result)
+    /* ------------------------------- delete jobs ------------------------------ */
+    app.delete('/job/:id',async(req,res)=>{
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const result = await jobCollection.deleteOne(query)
       res.send(result)
-     })
+    })
+
+   
 
      /* ------------------------ get some jobs data from db ----------------------- */
     //  app.get('/add-job',async(req,res)=>{
@@ -71,11 +81,7 @@ async function run() {
     //  })
 
 
-     /* ------------------------ get all jobs data from db ----------------------- */
-     app.get('/add-job',async(req,res)=>{
-      const result = await jobCollection.find().toArray()
-      res.send(result)
-     })
+   
   } finally {
     // Ensures that the client will close when you finish/error
   }

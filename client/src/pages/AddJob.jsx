@@ -4,8 +4,10 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { AuthContext } from '../providers/AuthProvider'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 const AddJob = () => {
   const {user} = useContext(AuthContext)
+  const navigate = useNavigate()
   // console.log(user)
   const [startDate, setStartDate] = useState(new Date())
   const handleJobData=async (e)=>{
@@ -39,6 +41,7 @@ const AddJob = () => {
   // console.log(data)
   form.reset()
   toast.success('Added Data Successful')
+  navigate('/my-posted-jobs')
  } catch (error) {
   console.log(error)
  }
@@ -70,7 +73,7 @@ const AddJob = () => {
                 Email Address
               </label>
               <input
-                id='emailAddress'
+                id='emailAddress' defaultValue={user?.email}
                 type='email'
                 name='email'
                 className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'

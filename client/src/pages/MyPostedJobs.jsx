@@ -3,15 +3,41 @@ import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../providers/AuthProvider'
 import { format } from 'date-fns'
+import toast from 'react-hot-toast'
 
 const MyPostedJobs = () => {
   const {user} = useContext(AuthContext)
-  const [users,setUsers] = useState([])
+  // console.log(user?.email)
+  const [jobs, setJobs] = useState([])
+ 
   useEffect(()=>{
-    axios.get(`http://localhost:9000/job?email=${user.email}`)
-    .then(res=>setUsers(res.data))
+   fetchAllJobs()
+  },[user])
+
+  const fetchAllJobs = async () => {
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_API_URL}/jobs/${user?.email}`
+    )
+    setJobs(data)
+  }
+  // const fetchAllJobs =async()=>{
+  //   axios.get(`http://localhost:9000/jobs/${user?.email}`)
+  //   .then(res=>setJobs(res.data))
+
+  //   .catch(err=>console.log(err))
+  // }
+  // console.log(jobs)
+  const handleDelete=id=>{
+    console.log(id)
+    axios.delete(`http://localhost:9000/job/${id}`)
+    .then(res=>{
+      toast.success('Delete Data Successful')
+      console.log(res.data)
+     fetchAllJobs()
+    })
+      
     .catch(err=>console.log(err))
-  },[user.email])
+  }
   return (
     <section className='container px-4 mx-auto pt-12'>
       <div className='flex items-center gap-x-3'>
@@ -74,33 +100,43 @@ const MyPostedJobs = () => {
                 </thead>
                 <tbody className='bg-white divide-y divide-gray-200 '>
                   {
-                    users?.map(user=><tr key={user._id}>
+                    jobs?.map(job=><tr key={job._id}>
                       <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                        {user?.title}
+                        {job?.title}
                       </td>
   
                       <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                        {format(new Date(user?.deadline), 'P') }
+                        {format(new Date(job?.deadline), 'P') }
                       </td>
   
                       <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                        {user?.min_price} - {user.max_price}
+                        {job?.min_price} - {job?.max_price}
                       </td>
                       <td className='px-4 py-4 text-sm whitespace-nowrap'>
                         <div className='flex items-center gap-x-2'>
-                          <p
-                            className={`px-3 py-1  text-blue-500 bg-blue-100/60 text-xs  rounded-full`}
+                        <p
+                            className={`px-3 py-1  ${
+                              job.category === 'Web Development' &&
+                              'text-blue-500 bg-blue-100/60'
+                            } ${
+                              job.category === 'Graphics Design' &&
+                              'text-green-500 bg-green-100/60'
+                            }
+                            ${
+                              job.category === 'Digital Marketing' &&
+                              'text-red-500 bg-red-100/60'
+                            } text-xs  rounded-full`}
                           >
-                            {user?.category}
+                            {job.category}
                           </p>
                         </div>
                       </td>
                       <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                        {user?.description.substr(0,17)}...
+                        {job?.description.substr(0,17)}...
                       </td>
                       <td className='px-4 py-4 text-sm whitespace-nowrap'>
                         <div className='flex items-center gap-x-6'>
-                          <button className='text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none'>
+                          <button onClick={()=>handleDelete(job._id)} className='text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none'>
                             <svg
                               xmlns='http://www.w3.org/2000/svg'
                               fill='none'

@@ -21,9 +21,10 @@ const JobDetails = () => {
     max_price,
     description,
     buyer,
+    _id
   } = job || {};
 
-  // console.log(job);
+  console.log(_id);
   useEffect(() => {
     axios
       .get(`http://localhost:9000/jobs/${id}`)
@@ -43,9 +44,9 @@ const JobDetails = () => {
     const email = form.email.value
     const deadline = startDate
     const comment = form.comment.value
-
+    const jobId = _id
     const bidsData ={
-      price,email,deadline,comment
+      price, email, deadline, comment, jobId
     }
    
     /* -------------------------------- condition ------------------------------- */

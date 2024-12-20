@@ -38,8 +38,17 @@ async function run() {
     app.post("/add-bid", async (req, res) => {
       const data = req.body;
       const result = await bidsCollection.insertOne(data);
-      console.log('result in posted bids =>',result);
+      // console.log('result in posted bids =>',result);
 
+      const filter = {_id: new ObjectId(data.jobId)}
+      // 2. Increase bid count in jobs collection
+      const update = {
+        $inc: {
+          bid_count: 1
+        }
+      }
+      const updateBids = await jobCollection.updateOne(filter, update)
+      console.log(updateBids)
       res.send(result);
     });
 
@@ -57,9 +66,12 @@ async function run() {
       const result = await jobCollection.findOne(query);
       res.send(result);
     });
+
+
+
     //  /* ------------------------ get some jobs data from db ----------------------- */
 
-    app.get("/jobs/:email", async (req, res) => {
+    app.get("/jobsEmail/:email", async (req, res) => {
       const email = req.params.email;
       console.log(email)
       const query = { "buyer.email": email };
@@ -68,6 +80,25 @@ async function run() {
       console.log(result)
       res.send(result);
     });
+
+
+
+
+//  app.get('/add-job',async(req,res)=>{
+    //   const category = req.query.category
+    //   let query = {}
+    //   if (category) {
+    //     query ={category: category}
+
+    //   }
+    //   const result = await jobCollection.find(query).toArray()
+    //   // console.log(result)
+    //   res.send(result)
+    //  })
+
+    
+
+
 
     /* ----------------------- save a job data in mongodb ----------------------- */
     app.post("/add-job", async (req, res) => {

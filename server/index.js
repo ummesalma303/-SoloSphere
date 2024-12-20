@@ -9,8 +9,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const uri = "mongodb://localhost:27017/";
-// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ot76b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+// const uri = "mongodb://localhost:27017/";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ot76b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -37,8 +37,8 @@ async function run() {
     /* ----------------------- save a bids data in mongodb ----------------------- */
     app.post("/add-bid", async (req, res) => {
       const data = req.body;
-      const result = await jobCollection.insertOne(data);
-      console.log(result);
+      const result = await bidsCollection.insertOne(data);
+      console.log('result in posted bids =>',result);
 
       res.send(result);
     });
@@ -61,8 +61,11 @@ async function run() {
 
     app.get("/jobs/:email", async (req, res) => {
       const email = req.params.email;
+      console.log(email)
       const query = { "buyer.email": email };
+      console.log(query)
       const result = await jobCollection.find(query).toArray();
+      console.log(result)
       res.send(result);
     });
 
@@ -70,10 +73,17 @@ async function run() {
     app.post("/add-job", async (req, res) => {
       const data = req.body;
       const result = await jobCollection.insertOne(data);
-      console.log(result);
+      console.log('result in posted job',result);
 
       res.send(result);
     });
+    // save a jobData in db
+    // app.post('/add-job', async (req, res) => {
+    //   const jobData = req.body
+    //   const result = await jobCollection.insertOne(jobData)
+    //   console.log(result)
+    //   res.send(result)
+    // })
 
     /* ------------------------------- delete jobs ------------------------------ */
     app.delete("/job/:id", async (req, res) => {

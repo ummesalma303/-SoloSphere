@@ -4,11 +4,12 @@ import { useContext, useEffect, useState } from "react";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
 
 const JobDetails = () => {
+  const navigate = useNavigate()
   const { user } = useContext(AuthContext);
   const [startDate, setStartDate] = useState(new Date());
   const { id } = useParams();
@@ -42,16 +43,16 @@ const JobDetails = () => {
     const form = e.target
     const price = form.price.value
     const email = form.email.value
-    const deadline = startDate
+    const myDeadline = startDate
     const comment = form.comment.value
     const jobId = _id
     const bidsData ={
-      price, email, deadline, comment, jobId
+      price, email, myDeadline, comment, jobId,category, title, status: 'Pending',
     }
    
     /* -------------------------------- condition ------------------------------- */
     // 1.deadline value check
-     if (compareAsc(new Date(), new Date(deadline))=== -1) {
+     if (compareAsc(new Date(deadline), new Date(myDeadline))=== -1) {
       return toast.error('Deadline Already Cross')
      }
      if (price > max_price) {
@@ -59,16 +60,22 @@ const JobDetails = () => {
      }
      if (email === email?.buyer) {
       return toast.error('Action not permitted')
-     }
-  
+    }
+    
     axios.post(`${import.meta.env.VITE_API_URL}/add-bid`,bidsData)
     .then(res=>{
       console.log(res.data)
       form.reset()
       toast.success('Added Data Successful')
+      navigate('/my-bids')
 
     })
-   .catch (err=>console.log(err))
+      .catch(err => {
+        // console.log(err)
+        if (err) {
+          return toast.error(err.response.data)
+        }
+      })
   
     
   }

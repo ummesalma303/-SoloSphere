@@ -37,6 +37,18 @@ async function run() {
     /* ----------------------- save a bids data in mongodb ----------------------- */
     app.post("/add-bid", async (req, res) => {
       const data = req.body;
+      
+       // 0. if a user placed a bid already in this job
+      const query = { email: data.email, jobId: data.jobId }
+      
+       const alreadyExist = await bidsCollection.findOne(query)
+       console.log('If already exist-->', alreadyExist)
+       if (alreadyExist)
+         return res
+           .status(400)
+           .send('You have already placed a bid on this job!')
+
+     // 1. Save data in bids collection
       const result = await bidsCollection.insertOne(data);
       // console.log('result in posted bids =>',result);
 
@@ -52,6 +64,23 @@ async function run() {
       res.send(result);
     });
 
+     //  /* ------------------------ get some jobs data from db ----------------------- */
+
+     app.get("/bids/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email)
+      const query = { email: email };
+      console.log(query)
+      const result = await bidsCollection.find(query).toArray();
+      console.log(result)
+      res.send(result);
+    });
+
+
+
+
+
+/* ---------------------------------- jobs ---------------------------------- */
     /* ------------------------ get all jobs data from db ----------------------- */
     app.get("/add-job", async (req, res) => {
       const result = await jobCollection.find().toArray();
@@ -73,11 +102,11 @@ async function run() {
 
     app.get("/jobsEmail/:email", async (req, res) => {
       const email = req.params.email;
-      console.log(email)
+      // console.log(email)
       const query = { "buyer.email": email };
-      console.log(query)
+      // console.log(query)
       const result = await jobCollection.find(query).toArray();
-      console.log(result)
+      // console.log(result)
       res.send(result);
     });
 

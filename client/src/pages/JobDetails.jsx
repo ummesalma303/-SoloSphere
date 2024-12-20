@@ -47,7 +47,7 @@ const JobDetails = () => {
     const comment = form.comment.value
     const jobId = _id
     const bidsData ={
-      price, email, myDeadline, comment, jobId,category, title, status: 'Pending',
+      price, email, myDeadline, comment, jobId,category, title,buyer:buyer?.email, status: 'Pending',
     }
    
     /* -------------------------------- condition ------------------------------- */
@@ -58,7 +58,7 @@ const JobDetails = () => {
      if (price > max_price) {
       return toast.error('Offer less at least equal maximum price.')
      }
-     if (email === email?.buyer) {
+     if (email === buyer?.email) {
       return toast.error('Action not permitted')
     }
     

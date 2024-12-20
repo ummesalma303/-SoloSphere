@@ -14,14 +14,18 @@ const MyBids = () => {
       })
     .catch(err=>console.log(err))
   }, [user?.email])
-  console.log(bids)
+  // console.log(bids)
+
+  const handleStatusChange = (id,status,prevStatus) => {
+    console.log(id,status,prevStatus)
+  }
   return (
     <section className='container px-4 mx-auto my-12'>
       <div className='flex items-center gap-x-3'>
         <h2 className='text-lg font-medium text-gray-800 '>My Bids</h2>
 
         <span className='px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full '>
-          6 Bid
+          {bids.length} Bid
         </span>
       </div>
 
@@ -77,7 +81,7 @@ const MyBids = () => {
                   </tr>
                 </thead>
                 {
-                  bids?.map(bid=><BidTableRow key={bid._id} bid={bid}></BidTableRow>)
+                  bids?.map(bid=><BidTableRow handleStatusChange={handleStatusChange} key={bid._id} bid={bid}></BidTableRow>)
                 }
                 
 

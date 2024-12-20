@@ -43,10 +43,12 @@ async function run() {
       
        const alreadyExist = await bidsCollection.findOne(query)
        console.log('If already exist-->', alreadyExist)
-       if (alreadyExist)
-         return res
-           .status(400)
-           .send('You have already placed a bid on this job!')
+      if (alreadyExist) {
+        return res
+          .status(400)
+          .send('You have already placed a bid on this job!')
+         
+       }
 
      // 1. Save data in bids collection
       const result = await bidsCollection.insertOne(data);
@@ -66,13 +68,20 @@ async function run() {
 
      //  /* ------------------------ get some jobs data from db ----------------------- */
 
-     app.get("/bids/:email", async (req, res) => {
+    app.get("/bids/:email", async (req, res) => {
       const email = req.params.email;
-      console.log(email)
-      const query = { email: email };
-      console.log(query)
+      const isBuyer = req.query.buyer
+      // console.log('line number: 74',isBuyer,req.query.isBuyer)
+      let query={}
+      if (isBuyer) {
+        query.buyer=email;
+        // console.log('line number: 78',isBuyer,req.query.isbuyer)
+      }
+      // else {
+      //   query.email = email
+      // }
       const result = await bidsCollection.find(query).toArray();
-      console.log(result)
+      console.log('buyerrrrrrrrrrrrrrrr=>',result)
       res.send(result);
     });
 

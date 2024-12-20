@@ -1,11 +1,12 @@
 // import React from 'react';
+import PropTypes from 'prop-types';
 
-import { format } from "date-fns";
+// import { format } from "date-fns";
 
-const BidTableRow = ({ bid }) => {
-    const { title, deadline, category, status, price, _id } = bid || {}
-
-    console.log(bid)
+const BidTableRow = ({ bid,handleStatusChange }) => {
+  const { title, deadline, category, status, price,_id } = bid || {}
+  
+    // console.log(bid)
     return (
         
              <tbody className='bg-white divide-y divide-gray-200 '>
@@ -42,7 +43,7 @@ const BidTableRow = ({ bid }) => {
                       </div>
                     </td>
                     <td className='px-4 py-4 text-sm whitespace-nowrap'>
-                      <button
+                      <button onClick={()=>handleStatusChange(_id, status,'Completed')}
                         title='Mark Complete'
                         className='text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none disabled:cursor-not-allowed'
                       >
@@ -68,4 +69,8 @@ const BidTableRow = ({ bid }) => {
     );
 };
 
+BidTableRow.propTypes = {
+  bid: PropTypes.object.isRequired,
+  handleStatusChange: PropTypes.func.isRequired
+};
 export default BidTableRow;

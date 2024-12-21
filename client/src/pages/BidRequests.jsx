@@ -8,20 +8,34 @@ const BidRequests = () => {
   const { user } = useContext(AuthContext)
   const [bids, setBids] = useState([]);
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_URL}/bids/${user?.email}?buyer=true`)
-      .then(res => {
-        // console.log(res.data)
-        setBids(res.data)
-      })
-    .catch(err=>console.log(err))
+   fetchAllBids()
   }, [user?.email])
 
-  const handleStatusChange = (id,status,prevStatus) => {
-    console.log({ id, status, prevStatus })
-    if (prevStatus === status || prevStatus === "completed") {
-       console.log('not allowed')
-      return
-    }
+  const fetchAllBids=()=>{
+    axios.get(`${import.meta.env.VITE_API_URL}/bids/${user?.email}?buyer=true`)
+    .then(res => {
+      console.log(res.data)
+      setBids(res.data)
+    })
+  .catch(err=>console.log(err))
+  }
+  const handleStatusChange = (id,prevStatus,status) => {
+    // console.log(id,status,prevStatus)
+    // const newStatus ={id, status, prevStatus}
+    // console.log( newStatus )
+  //   if (prevStatus === status || prevStatus === "completed") {
+  //      console.log('not allowed')
+  //     return
+  //   }
+
+    axios.patch(`${import.meta.env.VITE_API_URL}/bid-status-update/${id}`,{status})
+    .then(res => {
+      console.log(res.data)
+      fetchAllBids()
+      // setBids(res.data)
+    })
+  .catch(err=>console.log(err))
+
   }
   return (
     <section className='container px-4 mx-auto my-12'>

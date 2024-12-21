@@ -6,18 +6,25 @@ import BidTableRow from "../components/BidTableRow"
 const MyBids = () => {
   const { user } = useContext(AuthContext)
   const [bids, setBids] = useState([]);
+  
   useEffect(() => {
+    fetchBids()
+  }, [user?.email])
+
+  // console.log(bids)
+  const fetchBids=()=>{
     axios.get(`${import.meta.env.VITE_API_URL}/bids/${user?.email}`)
       .then(res => {
         // console.log(res.data)
         setBids(res.data)
       })
     .catch(err=>console.log(err))
-  }, [user?.email])
-  // console.log(bids)
+  }
 
-  const handleStatusChange = (id,status,prevStatus) => {
-    console.log(id,status,prevStatus)
+  const handleStatusChange = (id,prevStatus,status) => {
+    // console.log(id,status,prevStatus)
+    axios.patch(`${import.meta.env.VITE_API_URL}/bid-status-update/${id}`,{status})
+    fetchBids()
   }
   return (
     <section className='container px-4 mx-auto my-12'>

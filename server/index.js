@@ -66,6 +66,7 @@ async function run() {
       res.send(result);
     });
 
+
      //  /* ------------------------ get some jobs data from db ----------------------- */
 
     app.get("/bids/:email", async (req, res) => {
@@ -81,10 +82,21 @@ async function run() {
       //   query.email = email
       // }
       const result = await bidsCollection.find(query).toArray();
-      console.log('buyerrrrrrrrrrrrrrrr=>',result)
+      // console.log('buyerrrrrrrrrrrrrrrr=>',result)
       res.send(result);
     });
 
+    app.patch('/bid-status-update/:id', async (req, res) => {
+      const id = req.params.id
+      const { status } = req.body
+
+      const filter = { _id: new ObjectId(id) }
+      const updated = {
+        $set: { status },
+      }
+      const result = await bidsCollection.updateOne(filter, updated)
+      res.send(result)
+    })
 
 
 
@@ -92,7 +104,28 @@ async function run() {
 /* ---------------------------------- jobs ---------------------------------- */
     /* ------------------------ get all jobs data from db ----------------------- */
     app.get("/add-job", async (req, res) => {
-      const result = await jobCollection.find().toArray();
+      const filter = req.query.filter
+      const search = req.query.search
+      const sort = req.query.sort
+      // console.log('line no: 109', req.body.deadline)
+
+      let query = {
+        
+      }
+      if (filter) {
+        query.category = filter
+      }
+      if(search){
+        query = { title: { $regex: search, $options: "i" } };
+       
+      }
+      let option = {}
+      if (sort) {
+       option={sort:{deadline: sort === 'asc' ? 1 : -1}}
+      }
+      
+      
+      const result = await jobCollection.find(query,option).toArray();
       res.send(result);
     });
 

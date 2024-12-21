@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom'
 import { AuthContext } from '../providers/AuthProvider'
 import { format } from 'date-fns'
 import toast from 'react-hot-toast'
+// import { useMutation, useQueryClient, } from '@tanstack/react-query'
 
 const MyPostedJobs = () => {
+  // const queryClient = useQueryClient()
   const {user} = useContext(AuthContext)
   // console.log(user?.email)
   const [jobs, setJobs] = useState([])
@@ -20,14 +22,20 @@ const MyPostedJobs = () => {
     )
     setJobs(data)
   }
-  // console.log(jobs)
-  // const fetchAllJobs =async()=>{
-  //   axios.get(`http://localhost:9000/jobs/${user?.email}`)
-  //   .then(res=>setJobs(res.data))
+ 
 
-  //   .catch(err=>console.log(err))
-  // }
+  // const {isPending,mutateAsync} = useMutation({
+  //   mutationFn: async(id) => {
+  //     axios.delete(`http://localhost:9000/job/${id}` )
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['jobs'] })
+  //     toast.success('Delete Data Successful')
+  //   },
+  
+  // })
   // console.log(jobs)
+  
   const handleDelete=id=>{
     console.log(id)
     axios.delete(`http://localhost:9000/job/${id}`)
@@ -36,8 +44,17 @@ const MyPostedJobs = () => {
       console.log(res.data)
      fetchAllJobs()
     })
-      
     .catch(err=>console.log(err))
+
+    // mutateAsync(id)
+      // try {
+      //   const response = mutateAsync(id)
+      //   toast.success('Delete Data Successful');
+      //   console.log(response.data);
+      //   // fetchAllJobs();
+      // } catch (error) {
+      //   console.log(error)
+      // }
   }
   return (
     <section className='container px-4 mx-auto pt-12'>

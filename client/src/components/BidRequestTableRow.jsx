@@ -37,7 +37,7 @@ const BidRequestTableRow = ({bid,handleStatusChange}) => {
           <td className='px-4 py-4 text-sm whitespace-nowrap'>
                     <div className='flex items-center gap-x-6'>
                         {/* accept button */}
-              <button onClick={()=>handleStatusChange(_id, status,'Completed')} className='disabled:cursor-not-allowed text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none'>
+              <button  disabled={status === 'Rejected' || status === 'Completed'} onClick={()=>handleStatusChange(_id, status,'Completed')} className='disabled:cursor-not-allowed text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
@@ -54,7 +54,7 @@ const BidRequestTableRow = ({bid,handleStatusChange}) => {
                 </svg>
                         </button>
                         {/* reject button */}
-              <button  onClick={()=>handleStatusChange(_id, status, 'Rejected')} className='disabled:cursor-not-allowed text-gray-500 transition-colors duration-200   hover:text-yellow-500 focus:outline-none'>
+              <button  disabled={status === 'Rejected' || status === 'Completed'}  onClick={()=>handleStatusChange(_id, status, 'Rejected')} className='disabled:cursor-not-allowed text-gray-500 transition-colors duration-200   hover:text-yellow-500 focus:outline-none'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'

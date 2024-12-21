@@ -12,6 +12,8 @@ import PrivateRoute from './PrivateRoute'
 import MyBids from '../pages/MyBids'
 import BidRequests from '../pages/BidRequests'
 import AllJobs from '../pages/AllJobs'
+
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -26,7 +28,7 @@ const router = createBrowserRouter([
       {
         path: '/jobs',
         element: <AllJobs />,
-        loader:()=>fetch(`${import.meta.env.VITE_API_URL}/add-job`)
+        // loader:()=>fetch(`${import.meta.env.VITE_API_URL}/add-job?filter=true`)
       },
       {
         path: '/login',
